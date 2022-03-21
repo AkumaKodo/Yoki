@@ -3,6 +3,9 @@
     "deno.lint": true,
     "deno.unstable": true,
     "cSpell.words": [
+        "Akuma",
+        "Kodo",
+        "Komo",
         "Yoki"
     ]
 }
