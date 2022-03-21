@@ -1,9 +1,11 @@
-export type LibraryState = "alpha" | "beta" | "stable";
+export type library_state = "alpha" | "beta" | "stable";
 
-export interface YokiConfiguration {
+export interface yoki_configuration {
     debug_mode: boolean;
 }
 
-export const defaultConfigurationOptions = {
+export const default_configuration_options = {
     debug_mode: false
-} as YokiConfiguration;
+} as yoki_configuration;
+
+export type valid_key_option = string | number

@@ -5,7 +5,7 @@
  */
 
 import { gray, cyan, yellow, red, bold, italic, magenta } from "https://deno.land/std@0.117.0/fmt/colors.ts";
-import { defaultConfigurationOptions, YokiConfiguration } from "./types.ts";
+import { default_configuration_options, yoki_configuration } from "./types.ts";
 
 export enum Loglevels {
     Debug,
@@ -127,13 +127,14 @@ export const log = logger;
  */
 
 export class AkumaKodoLogger {
-    private configuration: YokiConfiguration | undefined;
-    public constructor(config?: YokiConfiguration) {
+    private configuration: yoki_configuration | undefined;
+    public constructor(config?: yoki_configuration) {
         if (!config) {
-            this.configuration = defaultConfigurationOptions;
+            this.configuration = default_configuration_options;
+        } else {
+            this.configuration = config;
         }
 
-        this.configuration = config;
     }
     public log(level: "debug" | "info" | "warn" | "error" | "fatal", event: string, message: string) {
         switch (level) {
