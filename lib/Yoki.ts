@@ -83,10 +83,11 @@ export class Yoki {
     public find(key: valid_key_option): any {
         const value = Yoki.pool.get(key);
         if (value !== undefined) {
-            Yoki.logger.debug("info", "Yoki.get", `Value: ${value}`);
+            Yoki.logger.debug("info", "Yoki.find", `Value: ${value !== typeof Object ? JSON.stringify(value) : value
+                }`);
             return value;
         } else {
-            Yoki.logger.debug("warn", "Yoki.get", `Key: ${key} not found!`);
+            Yoki.logger.debug("warn", "Yoki.find", `Key: ${key} not found!`);
             return value;
         }
     }
