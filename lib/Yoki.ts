@@ -33,6 +33,81 @@ export class Yoki {
     }
 
     /**
+     * Create a new key in the cache pool.
+     * @param key The key to create in the pool
+     * @param value The value to create in the pool
+     * @returns {any} The value of the key.
+     */
+    public create(key: valid_key_option, value: any): any {
+        Yoki.logger.debug("info", "Yoki.create", `Key: ${key} | Value: ${value !== typeof Object ? JSON.stringify(value) : value}`);
+        Yoki.pool.set(key, value);
+        return value;
+    }
+
+    /**
+     * Check if a key exists in the cache pool.
+     * @param key The key to search in the pool
+     * @returns {boolean} Returns true if the key exists in the pool, false if it doesn't.
+     */
+    public exists(key: valid_key_option): boolean {
+        return Yoki.pool.has(key)
+    }
+
+    /**
+     * Access each key in the cache pool in a for loop.
+     * @param callback The callback to run for each key in the pool.
+     */
+    public forEach(callback?: (value: any, key: any, map: Map<any, any>) => void): void {
+        if (callback) {
+            Yoki.pool.forEach(callback);
+            Yoki.logger.debug("info", "Yoki.forEach", "Pool has been iterated!");
+        } else {
+            Yoki.logger.debug("info", "Yoki.forEach", "Pool has been iterated!");
+            if (Yoki.pool.size > 250) {
+                Yoki.logger.debug("warn", "Yoki.forEach", "Pool size is over 250, this may cause performance issues! Default loop canceled used!");
+            }
+            else {
+                Yoki.pool.forEach((value, key) => {
+                    Yoki.logger.debug("info", "Yoki.forEach", `Key: ${key} | Value: ${value !== typeof Object ? JSON.stringify(value) : value
+                        }`);
+                });
+            }
+        }
+    }
+
+    /**
+     * Finds a key value in the cache pool.
+     * @param key The key to find in the pool
+     * @returns {any} The value of the key.
+     */
+    public find(key: valid_key_option): any {
+        const value = Yoki.pool.get(key);
+        if (value !== undefined) {
+            Yoki.logger.debug("info", "Yoki.get", `Value: ${value}`);
+            return value;
+        } else {
+            Yoki.logger.debug("warn", "Yoki.get", `Key: ${key} not found!`);
+            return value;
+        }
+    }
+
+    /**
+     * @returns {any} The keys of the cache pool.
+     */
+    public findKeys(): IterableIterator<any> {
+        Yoki.logger.debug("info", "Yoki.findKeys", "Pool keys: " + Yoki.pool.keys());
+        return Yoki.pool.keys();
+    }
+
+    /**
+     * @returns {any} The values of the cache pool.
+     */
+    public findValues(): IterableIterator<any> {
+        Yoki.logger.debug("info", "Yoki.findValues", "Pool values: " + Yoki.pool.values());
+        return Yoki.pool.values();
+    }
+
+    /**
      * Deletes a key from the cache pool.
      * @param key The key to delete from the pool
      * @returns {boolean} Returns true if the key was deleted, false if it wasn't
