@@ -1,25 +1,25 @@
-import { Yoki } from "../mod.ts"
+import { Yoki } from "../mod.ts";
 
 const Cache = new Yoki({
-    debug_mode: true,
-})
+  debug_mode: true,
+});
 
-Cache.size // => 0
+Cache.size; // => 0
 
 Cache.create("1", {
-    name: "Yoki test 1",
-}) // => { name: "Yoki test 1" }
+  name: "Yoki test 1",
+}); // => { name: "Yoki test 1" }
 
 Cache.create("2", {
-    name: "Yoki test 2",
-}) // => { name: "Yoki test 2" }
+  name: "Yoki test 2",
+}); // => { name: "Yoki test 2" }
 
 Cache.create("3", {
-    name: "Yoki test 3",
-}) // => { name: "Yoki test 3" }
+  name: "Yoki test 3",
+}); // => { name: "Yoki test 3" }
 
-Cache.exists("1") // => true
+Cache.exists("1"); // => true
 
-Cache.find("1") // => { name: "Yoki test 1" }
+Cache.find("1"); // => { name: "Yoki test 1" }
 
-Cache.findKeys() // => ["1", "2", "3"]
+Cache.findKeys(); // => ["1", "2", "3"]
