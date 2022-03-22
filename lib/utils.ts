@@ -7,8 +7,8 @@ export const default_configuration_options = {
     // deno-lint-ignore no-explicit-any
     filter: (value: any, key: any, ...args: any[]) => {
       return true;
-    }
-    , interval: 10_000
+    },
+    interval: 10_000,
   },
   sweeper_mode: false,
 } as yoki_configuration;

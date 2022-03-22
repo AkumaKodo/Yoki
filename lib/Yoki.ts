@@ -1,8 +1,10 @@
 // deno-lint-ignore-file
+import { sealed } from "./decorator/mod.ts";
 import { AkumaKodoLogger } from "./logger.ts";
 import { library_state, valid_key_option, yoki_configuration, yoki_pool_sweeper } from "./types.ts";
 import { default_configuration_options } from "./utils.ts";
 
+// @sealed
 export class Yoki {
   /** Lib version */
   public static readonly version = "0.1.0";
@@ -27,8 +29,14 @@ export class Yoki {
     if (config) {
       this.configuration = config;
       Yoki.maxPoolSize = this.configuration.max_cache_size! ?? default_configuration_options.max_cache_size;
-      if (this.configuration.sweeper_mode) {
+      if (config.sweeper_mode && config.sweeper) {
         this.createSweeper(config.sweeper);
+      } else {
+        Yoki.logger.debug(
+          "warn",
+          "Yoki.constructor",
+          "Sweeper is disabled! It's recommended to enable during production!",
+        );
       }
     } else {
       this.configuration = default_configuration_options;
