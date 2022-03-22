@@ -40,9 +40,9 @@ export class Yoki {
         } else {
           Yoki.logger = new AkumaKodoLogger(this.configuration);
           Yoki.logger.debug(
-              "warn",
-              "Yoki.constructor",
-              "Sweeper is disabled! It's recommended to enable during production!",
+            "warn",
+            "Yoki.constructor",
+            "Sweeper is disabled! It's recommended to enable during production!",
           );
         }
       } else {
@@ -152,11 +152,11 @@ export class Yoki {
   }
 
   /**
-   * Finds a key value in the cache pool.
+   * Gets a key value in the cache pool.
    * @param key The key to find in the pool
    * @returns {any} The value of the key.
    */
-  public find(key: valid_key_option): any {
+  public get(key: valid_key_option): any {
     const value = Yoki.pool.get(key);
     if (value !== undefined) {
       Yoki.logger.debug("info", "Yoki.find", `Value: ${value !== typeof Object ? JSON.stringify(value) : value}`);
@@ -181,6 +181,118 @@ export class Yoki {
   public get findValues(): IterableIterator<any> {
     Yoki.logger.debug("info", "Yoki.findValues", "Pool values: " + JSON.stringify(Array.from(Yoki.pool.values())));
     return Yoki.pool.values();
+  }
+
+  public filter(callback: (value: any, key: any) => boolean) {
+    const relevant = new Map<any, any>();
+    this.forEach((value, key) => {
+      if (callback(value, key)) relevant.set(key, value);
+    });
+
+    Yoki.logger.debug("info", "Yoki.filter", "Pool filtered: " + JSON.stringify(Array.from(relevant.values())));
+    return relevant;
+  }
+
+  public map<T>(callback: (value: any, key: any) => T) {
+    const results = [];
+    for (const key of Yoki.pool.keys()) {
+      const value = this.get(key)!;
+      results.push(callback(value, key));
+    }
+
+    Yoki.logger.debug("info", "Yoki.map", "Pool has been mapped!");
+    return results;
+  }
+
+  public some(callback: (value: any, key: any) => boolean) {
+    for (const key of Yoki.pool.keys()) {
+      const value = this.get(key)!;
+      if (callback(value, key)) {
+        Yoki.logger.debug(
+          "info",
+          "Yoki.some",
+          `Key: ${key} | Value: ${value !== typeof Object ? JSON.stringify(value) : value}`,
+        );
+        return true;
+      }
+    }
+
+    Yoki.logger.debug("warn", "Yoki.some", "No keys found!");
+    return false;
+  }
+
+  public every(callback: (value: any, key: any) => boolean) {
+    for (const key of Yoki.pool.keys()) {
+      const value = this.get(key)!;
+      if (!callback(value, key)) {
+        Yoki.logger.debug("warn", "Yoki.every", "Every callback returned false!");
+        return false;
+      }
+    }
+
+    Yoki.logger.debug("info", "Yoki.every", "Every callback returned true!");
+    return true;
+  }
+
+  public reduce<T>(callback: (accumulator: T, value: any, key: any) => T, initialValue?: T): T {
+    let accumulator: T = initialValue!;
+
+    for (const key of Yoki.pool.keys()) {
+      const value = this.get(key)!;
+      accumulator = callback(accumulator, value, key);
+    }
+
+    Yoki.logger.debug("info", "Yoki.reduce", `Accumulator: ${accumulator}`);
+    return accumulator;
+  }
+
+  /**
+   * Find a key or value by a filter function.
+   * @param callback The callback to run for each key in the pool.
+   */
+  public find(callback: (value: any, key: any) => boolean) {
+    for (const key of Yoki.pool.keys()) {
+      const value = this.get(key)!;
+      if (callback(value, key)) {
+        Yoki.logger.debug(
+          "info",
+          "Yoki.find",
+          `Key: ${key} | Value: ${value !== typeof Object ? JSON.stringify(value) : value}`,
+        );
+        return value;
+      }
+    }
+    Yoki.logger.debug("warn", "Yoki.find", "No key found!");
+    // If nothing matched
+    return;
+  }
+
+  /**
+   * @returns {Array<any>} An array of values in the cache pool.
+   */
+  public get array() {
+    Yoki.logger.debug("info", "Yoki.array", "Pool values: " + JSON.stringify(Array.from(Yoki.pool.values())));
+    return [...Yoki.pool.values()];
+  }
+
+  /**
+   * @returns The first value of the cache pool.
+   */
+  public get first() {
+    Yoki.logger.debug(
+      "info",
+      "Yoki.first",
+      "Pool values: " + JSON.stringify(Array.from(Yoki.pool.values().next().value)),
+    );
+    return [Yoki.pool.values().next().value];
+  }
+
+  /**
+   * @returns The last value of the cache pool.
+   */
+  public get last() {
+    Yoki.logger.debug("info", "Yoki.last", "Pool values: " + [Yoki.pool.values()][this.size - 1]);
+    return [Yoki.pool.values()][this.size - 1];
   }
 
   /**

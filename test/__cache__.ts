@@ -4,7 +4,7 @@ const Cache = new Yoki({
   debug_mode: true,
 });
 
-console.clear()
+console.clear();
 
 Cache.size; // => 0
 
@@ -24,8 +24,8 @@ Cache.exists("1"); // => true
 
 Cache.find("1"); // => { name: "Yoki test 1" }
 
-Cache.findKeys // => ["1", "2", "3"]
+Cache.findKeys; // => ["1", "2", "3"]
 
-Cache.findValues // => [{ name: "Yoki test 1" }, { name: "Yoki test 2" }, { name: "Yoki test 3" }]
+Cache.findValues; // => [{ name: "Yoki test 1" }, { name: "Yoki test 2" }, { name: "Yoki test 3" }]
 
 Cache.size; // => 3
