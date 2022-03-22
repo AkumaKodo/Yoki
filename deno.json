@@ -29,6 +29,5 @@
             "singleQuote": false,
             "proseWrap": "preserve"
         }
-    },
-    "importMap": "./import_map.json"
+    }
 }
