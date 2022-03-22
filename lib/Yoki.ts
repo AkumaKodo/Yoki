@@ -4,7 +4,7 @@ import { AkumaKodoLogger } from "./logger.ts";
 import { library_state, valid_key_option, yoki_configuration, yoki_pool_sweeper } from "./types.ts";
 import { default_configuration_options } from "./utils.ts";
 
-// @sealed
+@sealed
 export class Yoki {
   /** Lib version */
   public static readonly version = "0.1.0";
@@ -42,10 +42,10 @@ export class Yoki {
       this.configuration = default_configuration_options;
       Yoki.logger.debug("warn", "Yoki.constructor", "No configuration options were provided, using default options!");
     }
+
     // init
     Yoki.pool = new Map();
     Yoki.logger = new AkumaKodoLogger(this.configuration);
-
     Yoki.logger.debug("info", "Yoki.Constructor", "Yoki has been initialized!");
   }
 
