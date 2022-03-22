@@ -17,7 +17,7 @@ export class Yoki {
 
   private static maxPoolSize: number;
 
-  private static poolSweeper: yoki_pool_sweeper<any, any>;
+  private static sweeper: yoki_pool_sweeper<any, any> & { intervalId?: number };
 
   /**
    * Lib options
@@ -27,6 +27,9 @@ export class Yoki {
     if (config) {
       this.configuration = config;
       Yoki.maxPoolSize = this.configuration.max_cache_size! ?? default_configuration_options.max_cache_size;
+      if (this.configuration.sweeper_mode) {
+        this.createSweeper(config.sweeper);
+      }
     } else {
       this.configuration = default_configuration_options;
       Yoki.logger.debug("warn", "Yoki.constructor", "No configuration options were provided, using default options!");
@@ -36,6 +39,48 @@ export class Yoki {
     Yoki.logger = new AkumaKodoLogger(this.configuration);
 
     Yoki.logger.debug("info", "Yoki.Constructor", "Yoki has been initialized!");
+  }
+
+  /**
+   * Creates a new cache sweeper for the pool.
+   * @param options
+   * @returns
+   */
+  public createSweeper(options: yoki_pool_sweeper<any, any>): number | undefined {
+    if (Yoki.sweeper?.intervalId) clearInterval(Yoki.sweeper.intervalId);
+
+    if (this.configuration.sweeper_mode) {
+      Yoki.sweeper = options;
+      Yoki.logger.debug("info", "Yoki.createSweeper", "Sweeper has been created!");
+      Yoki.sweeper.intervalId = setInterval(() => {
+        Yoki.pool.forEach((value, key) => {
+          if (!Yoki.sweeper.filter(value, key)) return;
+          this.delete(key);
+          return key;
+        });
+      }, options.interval);
+      return Yoki.sweeper.intervalId;
+    }
+  }
+
+  /**
+   * Deletes the active sweeper interval.
+   * @returns {void} void
+   */
+  public destroySweeper(): void {
+    Yoki.logger.debug("info", "Yoki.destroySweeper", "Sweeper has been destroyed!");
+    return clearInterval(Yoki.sweeper?.intervalId);
+  }
+
+  /**
+   * Update the interval in the cache sweeper without creating a new one.
+   * @param newInterval
+   */
+  public updateSweeperInterval(newInterval: number) {
+    if (this.configuration.sweeper_mode) {
+      Yoki.logger.debug("info", "Yoki.updateSweeperInterval", `New interval: ${newInterval}`);
+      this.createSweeper({ filter: Yoki.sweeper.filter, interval: newInterval });
+    }
   }
 
   /**
@@ -60,6 +105,7 @@ export class Yoki {
    * @returns {boolean} Returns true if the key exists in the pool, false if it doesn't.
    */
   public exists(key: valid_key_option): boolean {
+    Yoki.logger.debug("info", "Yoki.exists", `Key: ${key}`);
     return Yoki.pool.has(key);
   }
 

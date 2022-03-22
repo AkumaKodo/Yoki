@@ -4,10 +4,8 @@ export type library_state = "alpha" | "beta" | "stable";
 export interface yoki_configuration {
   debug_mode: boolean;
   max_cache_size?: number;
-  sweeper?: {
-    enabled: boolean;
-    settings?: yoki_pool_sweeper<any, any>;
-  };
+  sweeper_mode?: boolean;
+  sweeper: yoki_pool_sweeper<any, any>
 }
 
 export type valid_key_option = string | number;
