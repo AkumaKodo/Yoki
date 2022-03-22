@@ -26,27 +26,33 @@ export class Yoki {
    * @param config The configuration for the library.
    */
   public constructor(config?: yoki_configuration) {
-    if (config) {
-      this.configuration = config;
-      Yoki.maxPoolSize = this.configuration.max_cache_size! ?? default_configuration_options.max_cache_size;
-      if (config.sweeper_mode && config.sweeper) {
-        this.createSweeper(config.sweeper);
-      } else {
-        Yoki.logger.debug(
-          "warn",
-          "Yoki.constructor",
-          "Sweeper is disabled! It's recommended to enable during production!",
-        );
-      }
-    } else {
+    try {
+      // init
       this.configuration = default_configuration_options;
-      Yoki.logger.debug("warn", "Yoki.constructor", "No configuration options were provided, using default options!");
-    }
+      Yoki.pool = new Map();
 
-    // init
-    Yoki.pool = new Map();
-    Yoki.logger = new AkumaKodoLogger(this.configuration);
-    Yoki.logger.debug("info", "Yoki.Constructor", "Yoki has been initialized!");
+      if (config) {
+        Yoki.logger = new AkumaKodoLogger(config);
+        this.configuration = config;
+        Yoki.maxPoolSize = this.configuration.max_cache_size! ?? default_configuration_options.max_cache_size;
+        if (config.sweeper_mode && config.sweeper) {
+          this.createSweeper(config.sweeper);
+        } else {
+          Yoki.logger = new AkumaKodoLogger(this.configuration);
+          Yoki.logger.debug(
+              "warn",
+              "Yoki.constructor",
+              "Sweeper is disabled! It's recommended to enable during production!",
+          );
+        }
+      } else {
+        Yoki.logger.debug("warn", "Yoki.constructor", "No configuration options were provided, using default options!");
+      }
+      Yoki.logger.debug("info", "Yoki.Constructor", "Yoki has been initialized!");
+    } catch (e) {
+      Yoki.logger.debug("error", "Yoki.constructor", "Failed to initialize Yoki!");
+      throw e;
+    }
   }
 
   /**
@@ -164,16 +170,16 @@ export class Yoki {
   /**
    * @returns {any} The keys of the cache pool.
    */
-  public findKeys(): IterableIterator<any> {
-    Yoki.logger.debug("info", "Yoki.findKeys", "Pool keys: " + Yoki.pool.keys());
+  public get findKeys(): IterableIterator<any> {
+    Yoki.logger.debug("info", "Yoki.findKeys", "Pool keys: " + Array.from(Yoki.pool.keys()));
     return Yoki.pool.keys();
   }
 
   /**
    * @returns {any} The values of the cache pool.
    */
-  public findValues(): IterableIterator<any> {
-    Yoki.logger.debug("info", "Yoki.findValues", "Pool values: " + Yoki.pool.values());
+  public get findValues(): IterableIterator<any> {
+    Yoki.logger.debug("info", "Yoki.findValues", "Pool values: " + JSON.stringify(Array.from(Yoki.pool.values())));
     return Yoki.pool.values();
   }
 
@@ -191,7 +197,7 @@ export class Yoki {
    *  Clears the entire cache pool.
    * @returns {void} void
    */
-  public clear(): void {
+  public get clear(): void {
     Yoki.logger.debug("info", "Yoki.clear", "Pool has been cleared!");
     return Yoki.pool.clear();
   }

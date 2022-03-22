@@ -181,6 +181,7 @@ export class AkumaKodoLogger {
    * @param level The log level to use
    * @param event The event to log
    * @param context The context to log
+   * @param status The status to log
    */
   public debug(
     level: "debug" | "info" | "warn" | "error" | "fatal" | "table",
@@ -204,50 +205,50 @@ export class AkumaKodoLogger {
         case "debug":
           log({
             logLevel: Loglevels.Debug,
-            name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+            name: `Yoki Internal - ${event.toUpperCase()}`,
           }).debug(context);
           break;
         case "info":
           log({
             logLevel: Loglevels.Info,
-            name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+            name: `Yoki Internal - ${event.toUpperCase()}`,
           }).info(context);
           break;
         case "warn":
           log({
             logLevel: Loglevels.Warn,
-            name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+            name: `Yoki Internal - ${event.toUpperCase()}`,
           }).warn(context);
           break;
         case "error":
           log({
             logLevel: Loglevels.Error,
-            name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+            name: `Yoki Internal - ${event.toUpperCase()}`,
           }).error(context);
           break;
         case "fatal":
           log({
             logLevel: Loglevels.Fatal,
-            name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+            name: `Yoki Internal - ${event.toUpperCase()}`,
           }).fatal(context);
           break;
         case "table":
           log({
             logLevel: Loglevels.Table,
-            name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+            name: `Yoki Internal - ${event.toUpperCase()}`,
           }).info(context);
           break;
         default:
           log({
             logLevel: Loglevels.Info,
-            name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+            name: `Yoki Internal - ${event.toUpperCase()}`,
           }).info(context);
           break;
       }
     } catch (e) {
       log({
         logLevel: Loglevels.Error,
-        name: `AkumaKodo Internal - ${event.toUpperCase()}`,
+        name: `Yoki Internal - ${event.toUpperCase()}`,
       }).error(e);
     }
   }
