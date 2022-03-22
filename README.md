@@ -27,3 +27,7 @@ Cache.exists("1"); // => true
 
 Cache.find("1"); // => { name: "Yoki test 1" }
 ```
+
+## Usage & methods
+
+*soon*
