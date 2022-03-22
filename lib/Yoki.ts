@@ -1,6 +1,7 @@
 // deno-lint-ignore-file
 import { AkumaKodoLogger } from "./logger.ts";
-import { default_configuration_options, library_state, valid_key_option, yoki_configuration } from "./types.ts";
+import { library_state, valid_key_option, yoki_configuration, yoki_pool_sweeper } from "./types.ts";
+import { default_configuration_options  } from "./utils.ts"
 
 export class Yoki {
     /** Lib version */
@@ -14,6 +15,10 @@ export class Yoki {
     /** The cache pool */
     private static pool: Map<any, any>
 
+    private static maxPoolSize: number
+
+    private static poolSweeper: yoki_pool_sweeper<any, any>
+
     /**
      * Lib options
      * @param config The configuration for the library.
@@ -21,6 +26,7 @@ export class Yoki {
     public constructor(config?: yoki_configuration) {
         if (config) {
             this.configuration = config;
+            Yoki.maxPoolSize = this.configuration.max_cache_size! ?? default_configuration_options.max_cache_size;
         } else {
             this.configuration = default_configuration_options
             Yoki.logger.debug("warn", "Yoki.constructor", "No configuration options were provided, using default options!");

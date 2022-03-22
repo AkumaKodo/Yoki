@@ -5,7 +5,8 @@
  */
 
 import { gray, cyan, yellow, red, bold, italic, magenta } from "https://deno.land/std@0.117.0/fmt/colors.ts";
-import { default_configuration_options, yoki_configuration } from "./types.ts";
+import { yoki_configuration } from "./types.ts";
+import { default_configuration_options } from "./utils.ts";
 
 export enum Loglevels {
     Debug,
